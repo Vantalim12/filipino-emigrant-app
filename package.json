@@ -1,0 +1,21 @@
+{
+  "name": "filipino-emigrants-app",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^7.1.6"
+  },
+  "dependencies": {
+    "firebase": "^12.2.1",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "react-firebase-hooks": "^5.1.1",
+    "recharts": "^3.2.1"
+  }
+}
