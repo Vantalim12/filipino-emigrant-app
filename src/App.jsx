@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useAuthState } from "react-firebase-hooks/auth";
 import {
   BarChart,
   Bar,
@@ -15,9 +16,12 @@ import {
   updateEmigrant,
   deleteEmigrant,
 } from "./services/emigrantsService";
+import { auth } from "./firebase";
+import Auth from "./components/Auth";
 import "./style.css";
 
 function App() {
+  const [user, loading, error] = useAuthState(auth);
   const [emigrants, setEmigrants] = useState([]);
   const [formData, setFormData] = useState({
     year: "",
@@ -29,23 +33,27 @@ function App() {
     notReported: "",
   });
   const [editingId, setEditingId] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [dataLoading, setDataLoading] = useState(false);
 
-  // Load emigrants data on component mount
+  // Load emigrants data when user is authenticated
   useEffect(() => {
-    loadEmigrants();
-  }, []);
+    if (user) {
+      loadEmigrants();
+    } else {
+      setEmigrants([]);
+    }
+  }, [user]);
 
   const loadEmigrants = async () => {
     try {
-      setLoading(true);
+      setDataLoading(true);
       const data = await getEmigrants();
       setEmigrants(data);
     } catch (error) {
       console.error("Error loading emigrants:", error);
       alert("Error loading data. Please try again.");
     } finally {
-      setLoading(false);
+      setDataLoading(false);
     }
   };
 
@@ -60,7 +68,7 @@ function App() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      setLoading(true);
+      setDataLoading(true);
 
       // Convert string values to numbers
       const data = {
@@ -95,7 +103,7 @@ function App() {
       console.error("Error saving emigrant:", error);
       alert("Error saving data. Please try again.");
     } finally {
-      setLoading(false);
+      setDataLoading(false);
     }
   };
 
@@ -115,14 +123,14 @@ function App() {
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this record?")) {
       try {
-        setLoading(true);
+        setDataLoading(true);
         await deleteEmigrant(id);
         await loadEmigrants();
       } catch (error) {
         console.error("Error deleting emigrant:", error);
         alert("Error deleting data. Please try again.");
       } finally {
-        setLoading(false);
+        setDataLoading(false);
       }
     }
   };
@@ -153,12 +161,46 @@ function App() {
     }))
     .sort((a, b) => a.year - b.year);
 
+  // Show loading spinner while checking authentication
+  if (loading) {
+    return (
+      <div className="app">
+        <div className="container">
+          <div className="loading-auth">
+            <h1>Filipino Emigrants Database</h1>
+            <p>Loading...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Show authentication error if any
+  if (error) {
+    return (
+      <div className="app">
+        <div className="container">
+          <h1>Filipino Emigrants Database</h1>
+          <div className="error-message">
+            <p>Authentication Error: {error.message}</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="app">
       <div className="container">
         <h1>Filipino Emigrants Database</h1>
+        
+        {/* Authentication Component */}
+        <Auth user={user} />
 
-        {/* CRUD Form */}
+        {/* Only show CRUD interface if user is authenticated */}
+        {user && (
+          <>
+            {/* CRUD Form */}
         <div className="form-section">
           <h2>
             {editingId ? "Edit Emigrant Record" : "Add New Emigrant Record"}
@@ -255,27 +297,27 @@ function App() {
             </div>
 
             <div className="form-buttons">
-              <button type="submit" disabled={loading}>
-                {loading
-                  ? "Saving..."
-                  : editingId
-                  ? "Update Record"
-                  : "Add Record"}
-              </button>
-              {editingId && (
-                <button type="button" onClick={cancelEdit} disabled={loading}>
-                  Cancel
-                </button>
-              )}
+               <button type="submit" disabled={dataLoading}>
+                 {dataLoading
+                   ? "Saving..."
+                   : editingId
+                   ? "Update Record"
+                   : "Add Record"}
+               </button>
+               {editingId && (
+                 <button type="button" onClick={cancelEdit} disabled={dataLoading}>
+                   Cancel
+                 </button>
+               )}
             </div>
           </form>
         </div>
 
         {/* Data Table */}
         <div className="table-section">
-          <h2>Emigrant Records</h2>
-          {loading && <p>Loading...</p>}
-          {emigrants.length === 0 && !loading ? (
+           <h2>Emigrant Records</h2>
+           {dataLoading && <p>Loading...</p>}
+           {emigrants.length === 0 && !dataLoading ? (
             <p>No records found. Add some data to get started!</p>
           ) : (
             <div className="table-container">
@@ -305,14 +347,14 @@ function App() {
                       <td>
                         <button
                           onClick={() => handleEdit(emigrant)}
-                          disabled={loading}
+                          disabled={dataLoading}
                           className="edit-btn"
                         >
                           Edit
                         </button>
                         <button
                           onClick={() => handleDelete(emigrant.id)}
-                          disabled={loading}
+                          disabled={dataLoading}
                           className="delete-btn"
                         >
                           Delete
@@ -349,6 +391,8 @@ function App() {
               </BarChart>
             </ResponsiveContainer>
           </div>
+        )}
+          </>
         )}
       </div>
     </div>
