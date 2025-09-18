@@ -10,6 +10,10 @@ A React web application for managing and visualizing Filipino emigrants data wit
 - **Real-time Database**: Firebase Firestore for data storage
 - **Responsive Design**: Works on desktop and mobile devices
 
+## Upload demo for the web app
+
+https://github.com/user-attachments/assets/c9e14d56-1894-4afc-a4e8-b75471468eab
+
 ## Dependencies Installation
 
 ### Prerequisites
@@ -68,3 +72,4 @@ src/
 - **Backend**: Firebase (Firestore, Authentication)
 - **Visualization**: Recharts
 - **Styling**: CSS3
+
