@@ -352,7 +352,7 @@ p {
 }
 
 .auth-divider::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 50%;
   left: 0;
@@ -478,17 +478,17 @@ p {
   .auth-form {
     max-width: none;
   }
-  
+
   .user-info {
     flex-direction: column;
     text-align: center;
     gap: 10px;
   }
-  
+
   .user-details {
     order: -1;
   }
-  
+
   .user-avatar {
     width: 60px;
     height: 60px;

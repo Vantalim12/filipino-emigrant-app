@@ -13,16 +13,20 @@ A React web application for managing and visualizing Filipino emigrants data wit
 ## Dependencies Installation
 
 ### Prerequisites
+
 - Node.js (v16 or higher)
 - npm or yarn
 
 ### Install Dependencies
+
 ```bash
 npm install
 ```
 
 ### Required Packages
+
 The following packages are automatically installed:
+
 - `react` - UI framework
 - `react-dom` - React DOM rendering
 - `firebase` - Firebase SDK
@@ -40,6 +44,7 @@ The following packages are automatically installed:
 ## Firebase Configuration
 
 Make sure to configure your Firebase project with:
+
 - Firestore Database (emigrants collection)
 - Authentication (Email/Password and Google)
 - Security rules for authenticated access
