@@ -9,6 +9,7 @@ lerna-debug.log*
 
 # Firebase configuration
 firebase.js
+src/firebase.js
 
 node_modules
 dist
